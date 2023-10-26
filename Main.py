@@ -27,7 +27,7 @@ def main():
         st.title("🦊 I'd Rather Be a CleverFox")
     with col2:
         # Change language of the website
-        language = session_state.submit_revise_query = st.radio('Language', ["EN", "TN", "JP"], horizontal=True)
+        language = session_state.submit_revise_query = st.radio('Language', ["TN", "EN", "JP"], horizontal=True)
 
     # Import OpenAI API key
     input_key = st.secrets["api_key"]
