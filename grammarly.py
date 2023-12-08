@@ -1,4 +1,4 @@
-import openai
+from openai import OpenAI
 import streamlit as st
 from format import (
     delete_previous_revised_essay,
@@ -17,7 +17,8 @@ def find_nth_word(temp_word, n):
 
 
 def chat(prompt, text, tmpr, num_token):
-    response = openai.ChatCompletion.create(
+    client = OpenAI()
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
             {
@@ -84,7 +85,7 @@ def grammar(text):
         delete_previous_revised_essay()
         # Get ChatGPT answer
         response = chat(temp_prompt, text, 0.3, 500)
-        res = response["choices"][0]["message"]["content"]
+        res = response.choices[0].message.content
         fixed_sentence = res
         # Using errant to compare and produce edited articale
         # fixed_sentence = match_tokens_from_errant(text, response)
@@ -124,7 +125,8 @@ def getExplain_en(fixed_sentence):
     QUES4 = "Compare EVERY modified parts to the original text of the following setnece, precisly explain why the replacement is better than original word in a markdown table : Water shortage has been a serious problem for many years and {+has caused+} [-causes-] various crises."
     ANS4 = '| Original Words | Replacement | Span of Words | Explanation |\n|---|---|---|---|\n| causes | has caused | has caused various crises | To maintain tense consistency, we should use the past perfect tense "had caused" to express that this issue had already caused various crises over the years.|'
 
-    response = openai.ChatCompletion.create(
+    client = OpenAI()
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "user", "content": QUES1},
@@ -143,7 +145,7 @@ def getExplain_en(fixed_sentence):
         temperature=0,
         max_tokens=1500,
     )
-    response_text = response["choices"][0]["message"]["content"]
+    response_text = response.choices[0].message.content
     st.write("Below is the table of the explanation： \n", response_text)
 
     return response_text

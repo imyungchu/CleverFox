@@ -1,4 +1,4 @@
-import openai
+from openai import OpenAI
 import streamlit as st
 from format import (
     print_double_space,
@@ -75,7 +75,8 @@ def choice(text, level):
         },
     ]
 
-    response = openai.ChatCompletion.create(
+    client = OpenAI()
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=messages,
         temperature=0.3,
@@ -98,7 +99,7 @@ def choice(text, level):
     # result
     if check:
         # Get ChatGPT answer
-        res = response["choices"][0]["message"]["content"]
+        res = response.choices[0].message.content
         fixed_sentence = res
         # Using errant to compare and produce edited articale
         # fixed_sentence = match_tokens_from_errant(text, response)
@@ -137,7 +138,8 @@ def getExplain_en(fixed_sentence):
     ANS1 = '| Original Words | Replacement | Span of Words | Explanation |\n|---|---|---|---|\n|  beautiful  |  stunning  | a stunning beach  | "Stunning" conveys a stronger sense of awe and admiration than "beautiful." |\n| sunny | bright | The weather was bright | "Bright" is a more specific and vivid description of the weather condition.。 |\n| warm | pleasantly | The weather was bright and pleasantly | "Pleasantly" adds a positive and enjoyable connotation to the temperature. |'
     QUES2 = "Compare the modified parts to the original text of the following setnece, precisly explain why the replacement is better than original word in a markdown table : I {+constructed+} [-built-] sandcastles with my family and {+gathered+} [-collected-] seashells."
     ANS2 = '| Original Words | Replacement | Span of Words | Explanation |\n|---|---|---|---|\n| built | constructed | I constructed sandcastles with my family | "Constructed" emphasizes the effort and creativity put into building a sandcastle. |\n| collected | gathered | gathered seashells | "Gathered" is the more precise verb used to describe the action of collecting seashells. |'
-    response = openai.ChatCompletion.create(
+    client = OpenAI()
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "user", "content": QUES1},
@@ -152,7 +154,7 @@ def getExplain_en(fixed_sentence):
         temperature=0,
         max_tokens=1500,
     )
-    response_text = response["choices"][0]["message"]["content"]
+    response_text = response.choices[0].message.content
     st.subheader("Explanation Table： \n")
     st.write(response_text)
 
@@ -169,7 +171,8 @@ def getExplain_tn(fixed_sentence):
     ANS1 = '| 原字詞 | 替代字詞 | 詞組(span of words) | 解釋 |\n|---|---|---|---|\n|  beautiful  |  stunning  | a stunning beach  | "Stunning"（令人驚嘆的）傳達了比"beautiful"（美麗的）更強烈的敬畏和欽佩的感覺。 |\n| sunny | bright | The weather was bright | "Bright" （明亮的）是對天氣狀況更具體生動的描述。 |\n| warm | pleasantly | The weather was bright and pleasantly | "Pleasantly"（愉快地）為溫度添加了積極和愉悅的涵義。 |'
     QUES2 = "Compare the modified parts to the original text of the following setnece, precisly explain why the replacement is better than original word in a markdown table : I {+constructed+} [-built-] sandcastles with my family and {+gathered+} [-collected-] seashells."
     ANS2 = '| 原字詞 | 替代字詞 | 詞組(span of words) | 解釋 |\n|---|---|---|---|\n| built | constructed | I constructed sandcastles with my family | "Constructed" （建造）強調了在建造沙堡時所投入的努力和創意。 |\n| collected | gathered | gathered seashells | "Gathered" （收集）是更精確的動詞，用於描述收集海貝殼的行動。 |'
-    response = openai.ChatCompletion.create(
+    client = OpenAI()
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "user", "content": QUES1},
@@ -184,7 +187,7 @@ def getExplain_tn(fixed_sentence):
         temperature=0,
         max_tokens=1500,
     )
-    response_text = response["choices"][0]["message"]["content"]
+    response_text = response.choices[0].message.content
     st.subheader("以下為解釋表格： \n")
     st.write(response_text)
 

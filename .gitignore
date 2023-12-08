@@ -1,3 +1,4 @@
-secrets.toml
+.env
 .DS_Store
 python3.11
+secrets.toml

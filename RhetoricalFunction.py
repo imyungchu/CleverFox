@@ -1,4 +1,4 @@
-import openai
+from openai import OpenAI
 import streamlit as st
 from format import print_double_space, submit_button, show_result
 from streamlit import session_state
@@ -141,13 +141,14 @@ Output:
     # result
     if submit_prompt:
         # Get ChatGPT answer
-        response_1 = openai.ChatCompletion.create(
+        client = OpenAI()
+        response_1 = client.chat.completions.create(
             model=model,
             messages=messages_1,
             temperature=0.7,
             # max_tokens=1000
         )
-        response_table = response_1["choices"][0]["message"]["content"]
+        response_table = response_1.choices[0].message.content
 
         fixed_sentence = getfixedsentence(article_content, response_table)
 
@@ -160,7 +161,7 @@ Output:
         print_lines = print_double_space(fixed_sentence)
 
         tabel_title = {
-            "EN": "**Analysis Table:**",
+            "EN": "**Analysis for each sentence and Explanation Table:**",
             "TN": "**以下為分析與表格：**",
             "JP": "**分析と表：**",
         }
@@ -245,13 +246,14 @@ Output:
         {"role": "user", "content": CONTENT_Convert_test_article},
     ]
 
-    response_2 = openai.ChatCompletion.create(
+    client = OpenAI()
+    response_2 = client.chat.completions.create(
         model=model,
         messages=messages_2,
         temperature=0.7,
         # max_tokens=1000
     )
 
-    fixed_sentence = response_2["choices"][0]["message"]["content"]
+    fixed_sentence = response_2.choices[0].message.content
 
     return fixed_sentence
